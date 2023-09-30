@@ -1,0 +1,32 @@
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 32px;
+  z-index: z('navigation');
+}
+
+.footer__left__title {
+  @extend %title-32;
+}
+
+.footer__left__text {
+  @extend %title-24;
+}
+
+.footer__right {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer__right__item {
+  text-align: right;
+}
+
+.footer__right__link {
+  @extend %title-24;
+}

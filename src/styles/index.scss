@@ -5,9 +5,14 @@
 @import './utils/mixins';
 
 @import './shared/pages';
+@import './shared/title';
+@import './shared/description';
 
 @import './base/fonts';
 @import './base/base';
+
+@import './layout/nav';
+@import './layout/footer';
 
 @import './pages/home/home';
 @import './pages/about/about';

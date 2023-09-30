@@ -76,30 +76,29 @@ export default class Canvas {
    * Events.
    */
   onPreloaded() {
-    this.createHome();
-    this.createAbout();
+    // this.createHome();
+    // this.createAbout();
 
     this.onChangeEnd(this.template, true);
   }
 
   onChangeStart() {
-    if (this.template === '/') {
-      this.home.hide();
-    }
-
-    if (this.template === '/about') {
-      this.about.hide();
-    }
+    // if (this.template === '/') {
+    //   this.home.hide();
+    // }
+    // if (this.template === '/about') {
+    //   this.about.hide();
+    // }
   }
 
   onChangeEnd(template, isPreloaded) {
-    if (template === '/') {
-      this.home.show(isPreloaded);
-    }
+    // if (template === '/') {
+    //   this.home.show(isPreloaded);
+    // }
 
-    if (template === '/about') {
-      this.about.show(isPreloaded);
-    }
+    // if (template === '/about') {
+    //   this.about.show(isPreloaded);
+    // }
 
     this.template = template;
   }

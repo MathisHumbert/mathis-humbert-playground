@@ -8,14 +8,17 @@
 html {
   @extend %cover;
 
-  @include media('<phone') {
-  }
-
+  background: $color-cod-gray;
+  color: $color-cararra;
+  font-size: calc(100vw / 1920 * 10);
   position: fixed;
   overflow: hidden;
   overscroll-behavior: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
+
+  @include media('<phone') {
+  }
 }
 
 body {

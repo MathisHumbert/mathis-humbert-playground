@@ -1,0 +1,33 @@
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 32px;
+  z-index: z('navigation');
+}
+
+.nav__left {
+  margin-bottom: 0.6rem;
+}
+
+.nav__left__title {
+  @extend %title-32;
+}
+
+.nav__left__text--small {
+  @extend %title-16;
+}
+
+.nav__left__text--big {
+  @extend %title-32;
+}
+
+.nav__right {
+  @extend %title-24;
+}
+
+.nav__right--about {
+}

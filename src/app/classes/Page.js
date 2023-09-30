@@ -167,11 +167,6 @@ export default class Page extends EventEmitter {
 
     this.addEventListeners();
 
-    gsap.set(document.documentElement, {
-      backgroundColor: this.element.getAttribute('data-background'),
-      color: this.element.getAttribute('data-color'),
-    });
-
     return Promise.resolve();
   }
 
