@@ -1,9 +1,9 @@
 nav.nav
   .nav__left
-    h3.nav__left__title Mathis Humbert
+    h3.nav__left__title=prismic.nav.data.title
     p.nav__left__text
-      span.nav__left__text--small Creative
+      span.nav__left__text--small=prismic.nav.data.description_left
       | &nbsp;
-      span.nav__left__text--big Developer
+      span.nav__left__text--big=prismic.nav.data.description_right
   .nav__right
-    a.nav__right--about(href="/about") About
+    a.nav__right--about(href=utils.handleLinkResolver(prismic.nav.data.link_about)) About

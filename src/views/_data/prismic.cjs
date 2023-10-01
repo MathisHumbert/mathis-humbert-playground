@@ -34,16 +34,12 @@ const client = prismic.createClient(PRISMIC_REPO, {
   fetch: axiosAdapter,
 });
 
-async function fetchAbout() {
-  return client.getSingle('about');
+async function fetchNav() {
+  return client.getSingle('nav');
 }
 
-async function fetchHome() {
-  return client.getSingle('home');
-}
-
-async function fetchMeta() {
-  return client.getSingle('meta');
+async function fetchFooter() {
+  return client.getSingle('footer');
 }
 
 function gatherAssets(home, about) {
@@ -53,28 +49,20 @@ function gatherAssets(home, about) {
 }
 
 async function fetchPrismicData() {
-  const [about, home, meta] = await Promise.all([
-    fetchAbout(),
-    fetchHome(),
-    fetchMeta(),
-  ]);
+  const [nav, footer] = await Promise.all([fetchNav(), fetchFooter()]);
 
-  const assets = gatherAssets(home, about);
+  // const assets = gatherAssets(home, about);
+
+  console.log(nav, footer);
 
   const data = {
-    assets,
-    about,
-    home,
-    meta,
-    navigation,
-    collection,
-    preloader,
-    collections,
-    products,
+    // assets,
+    nav,
+    footer,
     ...prismicH,
   };
 
   return data;
 }
 
-// module.exports = fetchPrismicData;
+module.exports = fetchPrismicData;
