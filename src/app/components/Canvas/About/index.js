@@ -1,7 +1,5 @@
 import * as THREE from 'three';
 
-import Media from '../Media';
-
 export default class About {
   constructor({ scene, geometry, screen, viewport }) {
     this.scene = scene;
@@ -10,8 +8,6 @@ export default class About {
     this.viewport = viewport;
 
     this.group = new THREE.Group();
-
-    this.createMedia();
   }
 
   createMedia() {

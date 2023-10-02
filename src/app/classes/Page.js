@@ -5,6 +5,7 @@ import Prefix from 'prefix';
 import gsap from 'gsap';
 
 import Highlight from '../animations/Highlight';
+import AsyncLoad from './AsyncLoad';
 import { Detection } from '../classes/Detection';
 import { clamp, lerp } from '../utils/math';
 import { mapEach } from '../utils/dom';
@@ -34,7 +35,13 @@ export default class Page extends EventEmitter {
       current: 0,
       target: 0,
       limit: 0,
-      ease: 0.1,
+      velocity: 0,
+      ease: 0.07,
+    };
+
+    this.screen = {
+      width: window.innerWidth,
+      height: window.innerHeight,
     };
 
     this.transformPrefix = Prefix('transform');
@@ -74,8 +81,9 @@ export default class Page extends EventEmitter {
         position: 0,
         current: 0,
         target: 0,
-        limit: this.elements.wrapper.clientHeight - window.innerHeight,
-        ease: 0.1,
+        limit: this.elements.wrapper.clientHeight - this.screen.height,
+        velocity: 0,
+        ease: 0.07,
       };
     }
 
@@ -118,7 +126,7 @@ export default class Page extends EventEmitter {
       if (shouldUpdateLimit) {
         window.requestAnimationFrame(() => {
           this.scroll.limit =
-            this.elements.wrapper.clientHeight - window.innerHeight;
+            this.elements.wrapper.clientHeight - this.screen.height;
         });
       }
     });
@@ -148,6 +156,7 @@ export default class Page extends EventEmitter {
       current: 0,
       target: 0,
       limit: 0,
+      velocity: 0,
       ease: 0.07,
     };
   }
@@ -192,9 +201,12 @@ export default class Page extends EventEmitter {
   onResize() {
     if (!this.elements.wrapper) return;
 
+    this.screen.width = window.innerWidth;
+    this.screen.height = window.innerHeight;
+
     window.requestAnimationFrame(() => {
       this.scroll.limit =
-        this.elements.wrapper.clientHeight - window.innerHeight;
+        this.elements.wrapper.clientHeight - this.screen.height;
 
       each(this.animations, (animation) => {
         if (animation.onResize) {
@@ -231,7 +243,7 @@ export default class Page extends EventEmitter {
   onWheel(normalized) {
     if (!this.isVisible) return;
 
-    const speed = normalized.pixelY;
+    const speed = normalized.pixelY * 0.5;
 
     this.scroll.target += speed;
 
@@ -273,6 +285,9 @@ export default class Page extends EventEmitter {
         animation.update(this.scroll);
       }
     });
+
+    this.scroll.velocity =
+      ((this.scroll.current - this.scroll.last) / this.screen.width) * 5;
 
     this.scroll.last = this.scroll.current;
   }

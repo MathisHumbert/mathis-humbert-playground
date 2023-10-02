@@ -1,2 +1,12 @@
 .home
   .home__wrapper
+    section.home__gallery
+      each project in prismic.projects
+        .home__project
+          figure.home__project__media
+            img.home__project__media__img(src=project.data.image.url, data-src=project.data.image.url, alt=project.data.image.alt)
+  .home__track
+    .home__track__current 01
+    .home__track__line 
+    .home__track__total=prismic.projects.length
+  .home__minimap

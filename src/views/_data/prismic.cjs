@@ -42,23 +42,34 @@ async function fetchFooter() {
   return client.getSingle('footer');
 }
 
-function gatherAssets(home, about) {
+async function fetchProjects() {
+  return client.getAllByType('project');
+}
+
+function gatherAssets(projects) {
   const assets = [];
+
+  projects.forEach((project) => {
+    assets.push(project.data.image.url);
+  });
 
   return assets;
 }
 
 async function fetchPrismicData() {
-  const [nav, footer] = await Promise.all([fetchNav(), fetchFooter()]);
+  const [nav, footer, projects] = await Promise.all([
+    fetchNav(),
+    fetchFooter(),
+    fetchProjects(),
+  ]);
 
-  // const assets = gatherAssets(home, about);
-
-  console.log(nav, footer);
+  const assets = gatherAssets(projects);
 
   const data = {
-    // assets,
+    assets,
     nav,
     footer,
+    projects,
     ...prismicH,
   };
 

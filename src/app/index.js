@@ -5,13 +5,13 @@ import './utils/scroll';
 import FontFaceObserver from 'fontfaceobserver';
 import AutoBind from 'auto-bind';
 import NormalizeWheel from 'normalize-wheel';
-import gsap from 'gsap';
 import { each } from 'lodash';
 
 import Canvas from './components/Canvas';
 
 import Home from './pages/Home';
 import About from './pages/About';
+import Preloader from './components/Preloader';
 
 class App {
   constructor() {
@@ -37,7 +37,9 @@ class App {
   }
 
   createPreloader() {
-    gsap.delayedCall(1, () => this.onPreloaded());
+    this.preloader = new Preloader();
+
+    this.preloader.once('loaded', this.onPreloaded);
   }
 
   createPages() {
@@ -158,7 +160,7 @@ class App {
     }
 
     if (this.canvas && this.canvas.update) {
-      this.canvas.update(this.page.scroll.current);
+      this.canvas.update(this.page.scroll);
     }
 
     window.requestAnimationFrame(this.update.bind(this));

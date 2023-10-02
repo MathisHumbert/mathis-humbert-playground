@@ -1,41 +1,61 @@
 import * as THREE from 'three';
 import gsap from 'gsap';
+import AutoBind from 'auto-bind';
 
-import fragment from '../../shaders/fragment.glsl';
-import vertex from '../../shaders/vertex.glsl';
+import fragment from '../../../shaders/fragment.glsl';
+import vertex from '../../../shaders/vertex.glsl';
 
 export default class Media {
-  constructor({ element, scene, geometry, screen, viewport, color }) {
+  constructor({ element, index, scene, geometry, screen, viewport }) {
     this.element = element;
+    this.index = index;
     this.scene = scene;
     this.geometry = geometry;
     this.screen = screen;
     this.viewport = viewport;
-    this.color = color;
+
+    AutoBind(this);
+
+    this.image = this.element.querySelector('img');
 
     this.scroll = 0;
     this.isVisible = false;
+    this.isHover = false;
 
-    this.createTexture();
     this.createMaterial();
     this.createMesh();
 
     this.onResize({ viewport, screen });
+    this.addEventListeners();
   }
 
   /**
    * Create.
    */
-  createTexture() {}
-
   createMaterial() {
+    const texture = window.TEXTURES[this.image.getAttribute('data-src')];
+
     this.material = new THREE.RawShaderMaterial({
       fragmentShader: fragment,
       vertexShader: vertex,
       transparent: true,
       uniforms: {
+        uTexture: { value: texture },
         uAlpha: { value: 0 },
-        uColor: { value: this.color },
+        uVelocity: { value: 0 },
+        uColor: { value: 0 },
+        uImageRes: {
+          value: new THREE.Vector2(
+            texture.image.naturalWidth,
+            texture.image.naturalHeight
+          ),
+        },
+        uPlaneRes: {
+          value: null,
+        },
+        uViewportRes: {
+          value: new THREE.Vector2(this.viewport.width, this.viewport.height),
+        },
       },
     });
   }
@@ -54,6 +74,16 @@ export default class Media {
       width: rect.width,
       height: rect.height,
     };
+
+    this.material.uniforms.uPlaneRes.value = new THREE.Vector2(
+      this.bounds.width,
+      this.bounds.height
+    );
+
+    this.material.uniforms.uViewportRes.value = new THREE.Vector2(
+      this.viewport.width,
+      this.viewport.height
+    );
 
     this.updateScale();
     this.updateX();
@@ -90,7 +120,8 @@ export default class Media {
   show() {
     this.isVisible = true;
 
-    gsap.fromTo(this.material.uniforms.uAlpha, { value: 0 }, { value: 1 });
+    gsap.fromTo(this.material.uniforms.uAlpha, { value: 0 }, { value: 0.2 });
+    gsap.fromTo(this.material.uniforms.uColor, { value: 0 }, { value: 0 });
   }
 
   hide() {
@@ -99,6 +130,16 @@ export default class Media {
     gsap.to(this.material.uniforms.uAlpha, {
       value: 0,
     });
+  }
+
+  showColor() {
+    gsap.to(this.material.uniforms.uAlpha, { value: 1 });
+    gsap.to(this.material.uniforms.uColor, { value: 1 });
+  }
+
+  hideColor() {
+    gsap.to(this.material.uniforms.uAlpha, { value: 0.2 });
+    gsap.to(this.material.uniforms.uColor, { value: 0 });
   }
 
   /**
@@ -111,14 +152,27 @@ export default class Media {
     this.createBounds();
   }
 
+  onClick() {
+    console.log('click');
+  }
+
+  /***
+   * Listeners.
+   */
+  addEventListeners() {
+    this.element.addEventListener('click', this.onClick);
+  }
+
   /**
    * Loop.
    */
   update(scroll) {
     if (!this.isVisible) return;
 
-    this.updateY(scroll);
+    this.material.uniforms.uVelocity.value = scroll.velocity;
 
-    this.scroll = scroll;
+    this.updateY(scroll.current);
+
+    this.scroll = scroll.current;
   }
 }
