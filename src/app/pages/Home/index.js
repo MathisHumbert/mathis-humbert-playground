@@ -9,6 +9,7 @@ export default class Home extends Page {
       elements: {
         wrapper: '.home__wrapper',
       },
+      isScrollable: false,
     });
   }
 

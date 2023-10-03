@@ -54,6 +54,7 @@ export default class Canvas {
   createHome() {
     this.home = new Home({
       scene: this.scene,
+      camera: this.camera,
       geometry: this.geometry,
       screen: this.screen,
       viewport: this.viewport,
@@ -130,13 +131,29 @@ export default class Canvas {
     }
   }
 
-  onTouchDown(event) {}
+  onTouchDown(event) {
+    if (this.home && this.home.onTouchDown) {
+      this.home.onTouchDown(event);
+    }
+  }
 
-  onTouchMove(event) {}
+  onTouchMove(event) {
+    if (this.home && this.home.onTouchMove) {
+      this.home.onTouchMove(event);
+    }
+  }
 
-  onTouchUp() {}
+  onTouchUp() {
+    if (this.home && this.home.onTouchUp) {
+      this.home.onTouchUp();
+    }
+  }
 
-  onWheel(normalized) {}
+  onWheel(normalized) {
+    if (this.home && this.home.onWheel) {
+      this.home.onWheel(normalized);
+    }
+  }
 
   /**
    * Loop.

@@ -1,12 +1,17 @@
 import * as THREE from 'three';
 import gsap from 'gsap';
 import AutoBind from 'auto-bind';
+import EventEmitter from 'events';
 
 import fragment from '../../../shaders/fragment.glsl';
 import vertex from '../../../shaders/vertex.glsl';
 
-export default class Media {
+export default class Media extends EventEmitter {
   constructor({ element, index, scene, geometry, screen, viewport }) {
+    super();
+
+    AutoBind(this);
+
     this.element = element;
     this.index = index;
     this.scene = scene;
@@ -14,26 +19,21 @@ export default class Media {
     this.screen = screen;
     this.viewport = viewport;
 
-    AutoBind(this);
-
-    this.image = this.element.querySelector('img');
-
+    this.currentIndex = 0;
     this.scroll = 0;
     this.isVisible = false;
     this.isHover = false;
+    this.isDetailed = 0;
 
     this.createMaterial();
     this.createMesh();
-
-    this.onResize({ viewport, screen });
-    this.addEventListeners();
   }
 
   /**
    * Create.
    */
   createMaterial() {
-    const texture = window.TEXTURES[this.image.getAttribute('data-src')];
+    const texture = window.TEXTURES[this.element.getAttribute('data-src')];
 
     this.material = new THREE.RawShaderMaterial({
       fragmentShader: fragment,
@@ -62,22 +62,23 @@ export default class Media {
 
   createMesh() {
     this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.mesh.index = this.index;
+
     this.scene.add(this.mesh);
   }
 
   createBounds() {
-    const rect = this.element.getBoundingClientRect();
-
-    this.bounds = {
-      top: rect.top + this.scroll,
-      left: rect.left,
-      width: rect.width,
-      height: rect.height,
-    };
-
     this.material.uniforms.uPlaneRes.value = new THREE.Vector2(
-      this.bounds.width,
-      this.bounds.height
+      gsap.utils.interpolate(
+        this.mediaSizes.width,
+        this.detailedMediaSizes.width,
+        this.isDetailed
+      ),
+      gsap.utils.interpolate(
+        this.mediaSizes.height,
+        this.detailedMediaSizes.height,
+        this.isDetailed
+      )
     );
 
     this.material.uniforms.uViewportRes.value = new THREE.Vector2(
@@ -85,33 +86,39 @@ export default class Media {
       this.viewport.height
     );
 
-    this.updateScale();
-    this.updateX();
-    this.updateY(this.scroll);
+    this.updateY();
   }
 
   /**
    * Update.
    */
   updateScale() {
-    this.mesh.scale.x =
-      (this.viewport.width * this.bounds.width) / this.screen.width;
-    this.mesh.scale.y =
-      (this.viewport.height * this.bounds.height) / this.screen.height;
-  }
+    this.mesh.scale.x = gsap.utils.interpolate(
+      (this.viewport.width * this.mediaSizes.width) / this.screen.width,
+      (this.viewport.width * this.detailedMediaSizes.width) / this.screen.width,
+      this.isDetailed
+    );
 
-  updateX(x = 0) {
-    this.mesh.position.x =
-      -this.viewport.width / 2 +
-      this.mesh.scale.x / 2 +
-      ((this.bounds.left - x) / this.screen.width) * this.viewport.width;
+    this.mesh.scale.y = gsap.utils.interpolate(
+      (this.viewport.height * this.mediaSizes.height) / this.screen.height,
+      (this.viewport.height * this.detailedMediaSizes.height) /
+        this.screen.height,
+      this.isDetailed
+    );
   }
 
   updateY(y = 0) {
     this.mesh.position.y =
-      this.viewport.height / 2 -
-      this.mesh.scale.y / 2 -
-      ((this.bounds.top - y) / this.screen.height) * this.viewport.height;
+      this.index * -this.mesh.scale.y -
+      this.index *
+        ((this.viewport.height *
+          gsap.utils.interpolate(
+            this.mediaSizes.gap,
+            this.detailedMediaSizes.gap,
+            this.isDetailed
+          )) /
+          this.screen.width) +
+      (y / this.screen.height) * this.viewport.height;
   }
 
   /**
@@ -142,37 +149,59 @@ export default class Media {
     gsap.to(this.material.uniforms.uColor, { value: 0 });
   }
 
+  onOpen() {
+    gsap.to(this, { isDetailed: 1, duration: 1 });
+  }
+
+  onClose() {
+    gsap.to(this, { isDetailed: 0, duration: 1 });
+  }
+
   /**
    * Events.
    */
-  onResize({ screen, viewport }) {
+  onResize({ screen, viewport, mediaSizes, detailedMediaSizes }) {
     this.screen = screen;
     this.viewport = viewport;
+    this.mediaSizes = mediaSizes;
+    this.detailedMediaSizes = detailedMediaSizes;
 
     this.createBounds();
   }
 
   onClick() {
-    console.log('click');
+    if (this.isDetailed) {
+      this.emit('close', this.index);
+    } else {
+      this.emit('open', this.index);
+    }
   }
 
-  /***
-   * Listeners.
-   */
-  addEventListeners() {
-    this.element.addEventListener('click', this.onClick);
+  onMouseEnter() {
+    gsap.to(this.material.uniforms.uAlpha, { value: 1 });
+    gsap.to(this.material.uniforms.uColor, { value: 1 });
+  }
+
+  onMouseLeave() {
+    if (this.index !== this.currentIndex) {
+      gsap.to(this.material.uniforms.uAlpha, { value: 0.2 });
+      gsap.to(this.material.uniforms.uColor, { value: 0 });
+    }
   }
 
   /**
    * Loop.
    */
-  update(scroll) {
+  update(scroll, index) {
     if (!this.isVisible) return;
+
+    this.updateScale();
 
     this.material.uniforms.uVelocity.value = scroll.velocity;
 
     this.updateY(scroll.current);
 
     this.scroll = scroll.current;
+    this.currentIndex = index;
   }
 }

@@ -11,26 +11,7 @@
 }
 
 .home__gallery {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3.2rem;
-  padding: 50vh 0;
-  padding: calc(50vh - 24rem / 2) 0;
-}
-
-.home__project__media {
-  position: relative;
-  overflow: hidden;
-  width: 106rem;
-  height: 24rem;
-  opacity: 0;
-}
-
-.home__project__media__img {
   @extend %cover;
-
-  object-fit: cover;
 }
 
 .home__track {
@@ -58,7 +39,7 @@
   @extend %title-20;
 }
 
-.home__minimap {
+.home__line {
   position: fixed;
   top: 50%;
   right: 16.8rem;
