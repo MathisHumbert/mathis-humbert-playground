@@ -85,14 +85,25 @@ export default class Media extends EventEmitter {
       this.viewport.width,
       this.viewport.height
     );
-
-    this.updateY();
   }
 
   /**
    * Update.
    */
   updateScale() {
+    this.material.uniforms.uPlaneRes.value = new THREE.Vector2(
+      gsap.utils.interpolate(
+        this.mediaSizes.width,
+        this.detailedMediaSizes.width,
+        this.isDetailed
+      ),
+      gsap.utils.interpolate(
+        this.mediaSizes.height,
+        this.detailedMediaSizes.height,
+        this.isDetailed
+      )
+    );
+
     this.mesh.scale.x = gsap.utils.interpolate(
       (this.viewport.width * this.mediaSizes.width) / this.screen.width,
       (this.viewport.width * this.detailedMediaSizes.width) / this.screen.width,
@@ -117,7 +128,7 @@ export default class Media extends EventEmitter {
             this.detailedMediaSizes.gap,
             this.isDetailed
           )) /
-          this.screen.width) +
+          this.screen.height) +
       (y / this.screen.height) * this.viewport.height;
   }
 

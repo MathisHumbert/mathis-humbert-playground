@@ -4,6 +4,7 @@ import { each, map } from 'lodash';
 import Media from './Media';
 import Line from './Line';
 import { clamp, lerp } from '../../../utils/math';
+import gsap from 'gsap';
 
 export default class Home {
   constructor({ scene, camera, geometry, screen, viewport }) {
@@ -78,6 +79,33 @@ export default class Home {
     );
   }
 
+  reset() {
+    const pxToRem = (this.screen.width / 1920) * 10;
+
+    this.mediaSizes = {
+      width: 106 * pxToRem,
+      height: 24 * pxToRem,
+      gap: 3.2 * pxToRem,
+    };
+
+    this.detailedMediaSizes = {
+      width: 112 * pxToRem,
+      height: 63.2 * pxToRem,
+      gap: 11.2 * pxToRem,
+    };
+
+    if (this.isDetailed) {
+      this.scroll.limit =
+        (this.detailedMediaSizes.height + this.detailedMediaSizes.gap) *
+          this.totalMedias -
+        this.detailedMediaSizes.height / 2 +
+        this.detailedMediaSizes.gap;
+    } else {
+      this.scroll.limit =
+        (this.mediaSizes.height + this.mediaSizes.gap) * (this.totalMedias - 1);
+    }
+  }
+
   /**
    * Animations.
    */
@@ -122,36 +150,19 @@ export default class Home {
    * Events.
    */
   onResize({ screen, viewport }) {
-    const pxToRem = (this.screen.width / 1920) * 10;
+    this.screen = screen;
+    this.viewport = viewport;
 
-    const mediaSizes = {
-      width: 106 * pxToRem,
-      height: 24 * pxToRem,
-      gap: 3.2 * pxToRem,
-    };
-
-    const detailedMediaSizes = {
-      width: 112 * pxToRem,
-      height: 63.2 * pxToRem,
-      gap: 11.2 * pxToRem,
-    };
-
-    if (this.isDetailed) {
-      this.scroll.limit =
-        (detailedMediaSizes.height + detailedMediaSizes.gap) *
-          (this.totalMedias - 1) -
-        detailedMediaSizes.height / 2 +
-        detailedMediaSizes.gap;
-    } else {
-      this.scroll.limit =
-        (mediaSizes.height + mediaSizes.gap) * (this.totalMedias - 1) -
-        mediaSizes.height / 2 +
-        mediaSizes.gap;
-    }
+    this.reset();
 
     each(this.medias, (media) => {
       if (media && media.onResize) {
-        media.onResize({ screen, viewport, mediaSizes, detailedMediaSizes });
+        media.onResize({
+          screen,
+          viewport,
+          mediaSizes: this.mediaSizes,
+          detailedMediaSizes: this.detailedMediaSizes,
+        });
       }
     });
 
@@ -186,27 +197,27 @@ export default class Home {
     if (intersects.length > 0) {
       const object = intersects[0].object;
 
-      console.log(object.index);
-
       if (object.index !== this.hoverIndex) {
-        console.log(this.medias[this.hoverIndex]);
-        // this.medias[this.hoverIndex].onMouseEnter();
+        if (this.hoverIndex !== null) {
+          this.medias[this.hoverIndex].onMouseLeave();
+        }
 
         this.hoverIndex = object.index;
+
+        this.medias[this.hoverIndex].onMouseEnter();
+        document.body.style.cursor = 'pointer';
       }
     } else if (this.hoverIndex !== null) {
       this.medias[this.hoverIndex].onMouseLeave();
-      console.log(this.medias[this.hoverIndex]);
+      document.body.style.cursor = '';
 
       this.hoverIndex = null;
     }
 
-    if (!this.isDown) return;
+    if (!this.isDown || this.isDetailed) return;
 
     const y = event.touches ? event.touches[0].clientY : event.clientY;
     const distance = (this.start - y) * 3;
-
-    console.log(this.scroll.position + distance);
 
     this.scroll.target = this.scroll.position + distance;
   }
@@ -214,11 +225,27 @@ export default class Home {
   onTouchUp() {
     if (!this.isVisible) return;
 
+    if (this.hoverIndex !== null) {
+      if (this.isDetailed) {
+        this.scroll.target =
+          (this.detailedMediaSizes.height + this.detailedMediaSizes.gap) *
+          this.hoverIndex;
+      } else {
+        this.onOpen(this.hoverIndex);
+      }
+    }
+
     this.isDown = false;
   }
 
   onWheel(normalized) {
     if (!this.isVisible) return;
+
+    if (this.isDetailed) {
+      this.onClose(this.currentIndex);
+
+      return;
+    }
 
     const speed = normalized.pixelY * 0.5;
 
@@ -249,32 +276,52 @@ export default class Home {
   }
 
   onOpen(index) {
-    console.log('open', index);
+    this.isDetailed = true;
 
-    // this.scroll.target =
-    //   (detailedMediaSizes.height + detailedMediaSizes.gap) * index;
+    this.reset();
+
+    const scroll =
+      (this.detailedMediaSizes.height + this.detailedMediaSizes.gap) * index;
+
+    gsap.to(this.scroll, {
+      target: scroll,
+      current: scroll,
+      last: scroll,
+      duration: 1,
+    });
 
     each(this.medias, (media) => {
       if (media && media.onOpen) {
-        media.onOpen(scroll, index);
+        media.onOpen();
       }
     });
   }
 
   onClose(index) {
-    console.log('close', index);
+    this.isDetailed = false;
 
     each(this.medias, (media) => {
       if (media && media.onClose) {
-        media.onClose(scroll, index);
+        media.onClose();
       }
+    });
+
+    this.reset();
+
+    const scroll = (this.mediaSizes.height + this.mediaSizes.gap) * index;
+
+    gsap.to(this.scroll, {
+      target: scroll,
+      current: scroll,
+      last: scroll,
+      duration: 1,
     });
   }
 
   /**
    * Loop.
    */
-  update(scroll) {
+  update() {
     if (!this.isVisible) return;
 
     this.scroll.target = clamp(0, this.scroll.limit, this.scroll.target);
@@ -296,8 +343,9 @@ export default class Home {
       }
     });
 
-    this.scroll.velocity =
-      ((this.scroll.current - this.scroll.last) / this.screen.width) * 5;
+    this.scroll.velocity = this.isDetailed
+      ? 0
+      : ((this.scroll.current - this.scroll.last) / this.screen.width) * 5;
 
     this.scroll.last = this.scroll.current;
 
