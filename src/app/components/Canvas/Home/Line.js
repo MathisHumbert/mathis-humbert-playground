@@ -3,7 +3,7 @@ import * as THREE from 'three';
 
 import fragment from '../../../shaders/line-fragment.glsl';
 import vertex from '../../../shaders/line-vertex.glsl';
-export default class Minimap {
+export default class Line {
   constructor({ element, index, total, scene, screen, viewport }) {
     this.element = element;
     this.index = index;
@@ -59,7 +59,7 @@ export default class Minimap {
     this.scaleX = (this.viewport.width * this.bounds.width) / this.screen.width;
     this.posX =
       -this.viewport.width / 2 -
-      this.scaleX * -1 +
+      this.scaleX +
       (this.bounds.left / this.screen.width) * this.viewport.width;
 
     this.line.position.x = this.posX;
@@ -121,12 +121,5 @@ export default class Minimap {
     this.viewport = viewport;
 
     this.createBounds();
-  }
-
-  /**
-   * Loop.
-   */
-  update(scroll, index) {
-    if (!this.isVisible) return;
   }
 }

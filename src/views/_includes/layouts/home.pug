@@ -2,8 +2,20 @@
   .home__wrapper
     section.home__gallery
       each project in prismic.projects
-        .home__project
+        article.home__project(data-background=project.data.background data-color=project.data.color)
           figure.home__project__media(data-src=project.data.image.url)
+          div.home__project__title
+            h3=project.data.title
+            p=project.data.type
+          ul.home__project__infos
+            each info in project.data.description
+              li.home__project__info
+                h6.home__project__info__title=info.type 
+                each item in info.list
+                  if item.spans.length
+                    a.home__project__info__link(href=item.spans[0].data.url target='_blank')=item.text
+                  else
+                    p.home__project__info__text=item.text
   .home__track
     .home__track__current 01
     .home__track__line 

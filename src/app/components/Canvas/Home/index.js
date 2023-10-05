@@ -1,11 +1,12 @@
 import * as THREE from 'three';
 import { each, map } from 'lodash';
+import gsap from 'gsap';
 
 import Media from './Media';
 import Line from './Line';
+import ProjectDom from './ProjectDom';
 import { clamp, lerp } from '../../../utils/math';
-import gsap from 'gsap';
-
+import { COLOR_CARARRA, COLOR_COD_GRAY } from '../../../utils/color';
 export default class Home {
   constructor({ scene, camera, geometry, screen, viewport }) {
     this.scene = scene;
@@ -14,15 +15,17 @@ export default class Home {
     this.screen = screen;
     this.viewport = viewport;
 
+    this.projectElements = document.querySelectorAll('.home__project');
     this.mediaElements = document.querySelectorAll('.home__project__media');
     this.trackCurrentElement = document.querySelector('.home__track__current');
     this.lineElement = document.querySelector('.home__line');
 
-    this.currentIndex = null;
-    this.hoverIndex = null;
     this.mediaGroup = new THREE.Group();
     this.linesGroup = new THREE.Group();
 
+    this.currentIndex = null;
+    this.hoverIndex = null;
+    this.detailedIndex = null;
     this.totalMedias = this.mediaElements.length;
     this.isDetailed = false;
     this.isDown = false;
@@ -39,6 +42,7 @@ export default class Home {
     this.createRaycast();
     this.createMedia();
     this.createLine();
+    this.createProjectDom();
   }
 
   createRaycast() {
@@ -76,6 +80,13 @@ export default class Home {
           screen: this.screen,
           viewport: this.viewport,
         })
+    );
+  }
+
+  createProjectDom() {
+    this.projectsDom = map(
+      this.projectElements,
+      (element) => new ProjectDom({ element })
     );
   }
 
@@ -120,9 +131,9 @@ export default class Home {
       }
     });
 
-    each(this.lines, (minimap) => {
-      if (minimap && minimap.show) {
-        minimap.show();
+    each(this.lines, (line) => {
+      if (line && line.show) {
+        line.show();
       }
     });
   }
@@ -139,9 +150,9 @@ export default class Home {
       }
     });
 
-    each(this.lines, (minimap) => {
-      if (minimap && minimap.hide) {
-        minimap.hide();
+    each(this.lines, (line) => {
+      if (line && line.hide) {
+        line.hide();
       }
     });
   }
@@ -166,9 +177,9 @@ export default class Home {
       }
     });
 
-    each(this.lines, (minimap) => {
-      if (minimap && minimap.onResize) {
-        minimap.onResize({ screen, viewport });
+    each(this.lines, (line) => {
+      if (line && line.onResize) {
+        line.onResize({ screen, viewport });
       }
     });
   }
@@ -214,6 +225,13 @@ export default class Home {
       this.hoverIndex = null;
     }
 
+    // add mobile
+    // if (this.isDown && this.isDetailed && !this.isAnimating) {
+    //   this.onClose(this.currentIndex);
+
+    //   return;
+    // }
+
     if (!this.isDown || this.isDetailed) return;
 
     const y = event.touches ? event.touches[0].clientY : event.clientY;
@@ -225,11 +243,21 @@ export default class Home {
   onTouchUp() {
     if (!this.isVisible) return;
 
-    if (this.hoverIndex !== null) {
+    if (this.hoverIndex !== null && this.detailedIndex !== this.hoverIndex) {
       if (this.isDetailed) {
+        this.isAnimating = true;
+
+        const oldIndex = this.detailedIndex;
+        this.detailedIndex = this.hoverIndex;
+
         this.scroll.target =
           (this.detailedMediaSizes.height + this.detailedMediaSizes.gap) *
           this.hoverIndex;
+
+        this.projectsDom[oldIndex].hide();
+        this.projectsDom[this.detailedIndex].show(0.25);
+        ``;
+        this.isAnimating = false;
       } else {
         this.onOpen(this.hoverIndex);
       }
@@ -241,7 +269,7 @@ export default class Home {
   onWheel(normalized) {
     if (!this.isVisible) return;
 
-    if (this.isDetailed) {
+    if (this.isDetailed && !this.isAnimating) {
       this.onClose(this.currentIndex);
 
       return;
@@ -276,6 +304,7 @@ export default class Home {
   }
 
   onOpen(index) {
+    this.isAnimating = true;
     this.isDetailed = true;
 
     this.reset();
@@ -295,9 +324,16 @@ export default class Home {
         media.onOpen();
       }
     });
+
+    this.projectsDom[index].show(0);
+
+    this.detailedIndex = index;
+
+    gsap.delayedCall(1, () => (this.isAnimating = false));
   }
 
   onClose(index) {
+    this.isAnimating = true;
     this.isDetailed = false;
 
     each(this.medias, (media) => {
@@ -316,6 +352,18 @@ export default class Home {
       last: scroll,
       duration: 1,
     });
+
+    this.projectsDom[this.detailedIndex].hide();
+    // set color of lines and track
+
+    gsap.to(document.documentElement, {
+      color: COLOR_CARARRA,
+      background: COLOR_COD_GRAY,
+    });
+
+    this.detailedIndex = null;
+
+    gsap.delayedCall(1, () => (this.isAnimating = false));
   }
 
   /**
@@ -343,9 +391,10 @@ export default class Home {
       }
     });
 
-    this.scroll.velocity = this.isDetailed
-      ? 0
-      : ((this.scroll.current - this.scroll.last) / this.screen.width) * 5;
+    this.scroll.velocity =
+      this.isDetailed || this.isAnimating
+        ? 0
+        : ((this.scroll.current - this.scroll.last) / this.screen.width) * 5;
 
     this.scroll.last = this.scroll.current;
 
@@ -362,11 +411,10 @@ export default class Home {
         media.update(this.scroll, index);
       }
     });
-
-    each(this.lines, (line) => {
-      if (line && line.update) {
-        line.update(this.scroll, index);
-      }
-    });
   }
 }
+
+// change colo and background
+// touchmove close
+// resize
+// about

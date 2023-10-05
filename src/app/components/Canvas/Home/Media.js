@@ -180,14 +180,6 @@ export default class Media extends EventEmitter {
     this.createBounds();
   }
 
-  onClick() {
-    if (this.isDetailed) {
-      this.emit('close', this.index);
-    } else {
-      this.emit('open', this.index);
-    }
-  }
-
   onMouseEnter() {
     gsap.to(this.material.uniforms.uAlpha, { value: 1 });
     gsap.to(this.material.uniforms.uColor, { value: 1 });

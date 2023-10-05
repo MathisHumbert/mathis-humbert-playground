@@ -69,7 +69,7 @@ async function fetchPrismicData() {
     assets,
     nav,
     footer,
-    projects,
+    projects: projects.sort((a, b) => b.data.id - a.data.id),
     ...prismicH,
   };
 
