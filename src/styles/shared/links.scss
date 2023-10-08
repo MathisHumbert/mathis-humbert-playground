@@ -1,0 +1,54 @@
+%link__wrapper {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  vertical-align: top;
+  width: fit-content;
+
+  span {
+    display: inline-block;
+    transform-origin: center center 0.5em;
+    vertical-align: middle;
+  }
+}
+
+%link__line {
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transition: transform 0.7s $ease-smooth;
+}
+
+%link__line--visible {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+%link__line--hidden {
+  transform: scaleX(0);
+  transform-origin: right center;
+}
+
+%link {
+  @extend %link__wrapper;
+
+  display: inline-block;
+  pointer-events: none;
+
+  &:after {
+    @extend %link__line;
+    @extend %link__line--hidden;
+  }
+
+  &.visible {
+    pointer-events: inherit;
+
+    &:after {
+      @extend %link__line--visible;
+    }
+  }
+}

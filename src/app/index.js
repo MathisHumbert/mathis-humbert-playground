@@ -7,11 +7,11 @@ import AutoBind from 'auto-bind';
 import NormalizeWheel from 'normalize-wheel';
 import { each } from 'lodash';
 
-import Canvas from './components/Canvas';
-
 import Home from './pages/Home';
 import About from './pages/About';
 import Preloader from './components/Preloader';
+import Navigation from './components/Navigation';
+import Canvas from './components/Canvas';
 
 class App {
   constructor() {
@@ -25,8 +25,8 @@ class App {
   init() {
     this.createCanvas();
     this.createPreloader();
-
     this.createPages();
+    this.createNavigation();
 
     this.addEventListeners();
     this.addLinkListeners();
@@ -54,6 +54,10 @@ class App {
     this.page = this.pages[this.template];
   }
 
+  createNavigation() {
+    this.navigation = new Navigation({ template: this.template });
+  }
+
   /**
    * Events.
    */
@@ -65,6 +69,8 @@ class App {
     this.canvas.onPreloaded();
 
     this.page.show();
+
+    this.navigation.show();
   }
 
   onPopState() {
@@ -88,6 +94,8 @@ class App {
     }
 
     this.template = window.location.pathname;
+
+    this.navigation.onChange(this.template);
 
     this.canvas.onChangeEnd(this.template, true);
 

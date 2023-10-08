@@ -1,11 +1,11 @@
 footer.footer
   .footer__left
-    h3.footer__left__title=prismic.footer.data.title
-    p.footer__left__text=prismic.footer.data.description
+    h3.footer__left__title(data-animation='title' data-delay=0.2)=prismic.footer.data.title
+    p.footer__left__text(data-animation='title' data-delay=0.3)=prismic.footer.data.description
   ul.footer__right
     li.footer__right__item
-      a.footer__right__link(href=prismic.footer.data.link_twitter.url target='_blank') Twitter
+      a.footer__right__link(href=prismic.footer.data.link_twitter.url target='_blank' data-animation='link' data-delay=0.1) Twitter
     li.footer__right__item
-      a.footer__right__link(href=prismic.footer.data.link_email.url target='_blank') Email
+      a.footer__right__link(href=prismic.footer.data.link_email.url target='_blank' data-animation='link' data-delay=0.2) Email
     li.footer__right__item
-      a.footer__right__link(href=prismic.footer.data.link_github.url  target='_blank') Github
+      a.footer__right__link(href=prismic.footer.data.link_github.url  target='_blank' data-animation='link' data-delay=0.3) Github

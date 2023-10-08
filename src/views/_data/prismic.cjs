@@ -46,6 +46,10 @@ async function fetchProjects() {
   return client.getAllByType('project');
 }
 
+async function fetchAbout() {
+  return client.getSingle('about');
+}
+
 function gatherAssets(projects) {
   const assets = [];
 
@@ -57,16 +61,18 @@ function gatherAssets(projects) {
 }
 
 async function fetchPrismicData() {
-  const [nav, footer, projects] = await Promise.all([
+  const [nav, footer, projects, about] = await Promise.all([
     fetchNav(),
     fetchFooter(),
     fetchProjects(),
+    fetchAbout(),
   ]);
 
   const assets = gatherAssets(projects);
 
   const data = {
     assets,
+    about,
     nav,
     footer,
     projects: projects.sort((a, b) => b.data.id - a.data.id),

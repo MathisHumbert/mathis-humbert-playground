@@ -1,14 +1,17 @@
 import gsap from 'gsap';
 import SplitType from 'split-type';
+import { each } from 'lodash';
+import * as THREE from 'three';
 
 import Component from '../../../classes/Component';
-import { each, map } from 'lodash';
 
 export default class ProjectDom extends Component {
-  constructor({ element }) {
+  constructor({ element, trackLineElement, lines }) {
     super({
       element: element,
       elements: {
+        trackLineElement: trackLineElement,
+        lines: lines,
         title: '.home__project__title',
         titleSpans: null,
         infos: '.home__project__infos',
@@ -62,7 +65,14 @@ export default class ProjectDom extends Component {
       duration: 1,
     });
 
-    // set color of lines and track
+    gsap.to(this.elements.trackLineElement, {
+      background: this.color,
+      duration: 1,
+    });
+
+    each(this.elements.lines, (line) => {
+      line.material.uniforms.uColor.value = new THREE.Color(this.color);
+    });
 
     const tl = gsap.timeline({
       onStart: () => gsap.set(this.element, { opacity: 1 }),
@@ -84,7 +94,6 @@ export default class ProjectDom extends Component {
 
     const tl = gsap.timeline({
       onComplete: () => {
-        res();
         gsap.set(this.element, { opacity: 0 });
       },
     });

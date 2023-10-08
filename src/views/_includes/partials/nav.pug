@@ -1,9 +1,7 @@
 nav.nav
   .nav__left
-    h3.nav__left__title=prismic.nav.data.title
-    p.nav__left__text
-      span.nav__left__text--small=prismic.nav.data.description_left
-      | &nbsp;
-      span.nav__left__text--big=prismic.nav.data.description_right
+    h3.nav__left__title(data-animation='title' data-delay=0)=prismic.nav.data.title
+    p.nav__left__text(data-animation='title' data-delay=0.1)=prismic.nav.data.description
   .nav__right
-    a.nav__right--about(href=utils.handleLinkResolver(prismic.nav.data.link_about)) About
+    a.nav__right__link(href='/about' data-animation='link' data-delay=0) About
+    a.nav__right__link(href='/' data-animation='link' data-delay=0) Home

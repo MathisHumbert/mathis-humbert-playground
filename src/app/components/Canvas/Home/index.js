@@ -7,6 +7,8 @@ import Line from './Line';
 import ProjectDom from './ProjectDom';
 import { clamp, lerp } from '../../../utils/math';
 import { COLOR_CARARRA, COLOR_COD_GRAY } from '../../../utils/color';
+import { Detection } from '../../../classes/Detection';
+
 export default class Home {
   constructor({ scene, camera, geometry, screen, viewport }) {
     this.scene = scene;
@@ -18,6 +20,7 @@ export default class Home {
     this.projectElements = document.querySelectorAll('.home__project');
     this.mediaElements = document.querySelectorAll('.home__project__media');
     this.trackCurrentElement = document.querySelector('.home__track__current');
+    this.trackLineElement = document.querySelector('.home__track__line');
     this.lineElement = document.querySelector('.home__line');
 
     this.mediaGroup = new THREE.Group();
@@ -86,7 +89,12 @@ export default class Home {
   createProjectDom() {
     this.projectsDom = map(
       this.projectElements,
-      (element) => new ProjectDom({ element })
+      (element) =>
+        new ProjectDom({
+          element,
+          trackLineElement: this.trackLineElement,
+          lines: this.lines,
+        })
     );
   }
 
@@ -166,6 +174,19 @@ export default class Home {
 
     this.reset();
 
+    let scroll = 0;
+
+    if (this.isDetailed) {
+      scroll =
+        (this.detailedMediaSizes.height + this.detailedMediaSizes.gap) *
+        this.currentIndex;
+    } else {
+      scroll =
+        (this.mediaSizes.height + this.mediaSizes.gap) * this.currentIndex;
+    }
+
+    this.scroll.target = this.scroll.current = this.scroll.last = scroll;
+
     each(this.medias, (media) => {
       if (media && media.onResize) {
         media.onResize({
@@ -188,6 +209,8 @@ export default class Home {
     if (!this.isVisible) return;
 
     this.isDown = true;
+
+    if (!Detection.isMobile) return;
 
     this.scroll.position = this.scroll.current;
     this.start = event.touches ? event.touches[0].clientY : event.clientY;
@@ -225,12 +248,13 @@ export default class Home {
       this.hoverIndex = null;
     }
 
-    // add mobile
-    // if (this.isDown && this.isDetailed && !this.isAnimating) {
-    //   this.onClose(this.currentIndex);
+    if (!Detection.isMobile) return;
 
-    //   return;
-    // }
+    if (this.isDown && this.isDetailed && !this.isAnimating) {
+      this.onClose(this.currentIndex);
+
+      return;
+    }
 
     if (!this.isDown || this.isDetailed) return;
 
@@ -245,19 +269,7 @@ export default class Home {
 
     if (this.hoverIndex !== null && this.detailedIndex !== this.hoverIndex) {
       if (this.isDetailed) {
-        this.isAnimating = true;
-
-        const oldIndex = this.detailedIndex;
-        this.detailedIndex = this.hoverIndex;
-
-        this.scroll.target =
-          (this.detailedMediaSizes.height + this.detailedMediaSizes.gap) *
-          this.hoverIndex;
-
-        this.projectsDom[oldIndex].hide();
-        this.projectsDom[this.detailedIndex].show(0.25);
-        ``;
-        this.isAnimating = false;
+        this.onChange(this.hoverIndex);
       } else {
         this.onOpen(this.hoverIndex);
       }
@@ -354,16 +366,39 @@ export default class Home {
     });
 
     this.projectsDom[this.detailedIndex].hide();
-    // set color of lines and track
 
     gsap.to(document.documentElement, {
       color: COLOR_CARARRA,
       background: COLOR_COD_GRAY,
     });
 
+    gsap.to(this.trackLineElement, {
+      background: COLOR_CARARRA,
+    });
+
+    each(this.lines, (line) => {
+      line.material.uniforms.uColor.value = new THREE.Color(COLOR_CARARRA);
+    });
+
     this.detailedIndex = null;
 
     gsap.delayedCall(1, () => (this.isAnimating = false));
+  }
+
+  onChange(index) {
+    this.isAnimating = true;
+
+    const oldIndex = this.detailedIndex;
+    this.detailedIndex = index;
+
+    this.scroll.target =
+      (this.detailedMediaSizes.height + this.detailedMediaSizes.gap) *
+      this.detailedIndex;
+
+    this.projectsDom[oldIndex].hide();
+    this.projectsDom[this.detailedIndex].show(0.25);
+
+    this.isAnimating = false;
   }
 
   /**
@@ -413,8 +448,3 @@ export default class Home {
     });
   }
 }
-
-// change colo and background
-// touchmove close
-// resize
-// about

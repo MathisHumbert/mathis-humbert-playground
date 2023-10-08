@@ -3,8 +3,8 @@ import gsap from 'gsap';
 import AutoBind from 'auto-bind';
 import EventEmitter from 'events';
 
-import fragment from '../../../shaders/fragment.glsl';
-import vertex from '../../../shaders/vertex.glsl';
+import fragment from '../../../shaders/media-fragment.glsl';
+import vertex from '../../../shaders/media-vertex.glsl';
 
 export default class Media extends EventEmitter {
   constructor({ element, index, scene, geometry, screen, viewport }) {

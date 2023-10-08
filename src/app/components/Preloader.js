@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import gsap from 'gsap';
 
-import Component from '@classes/Component';
+import Component from '../classes/Component';
 
 export default class Preloader extends Component {
   constructor() {

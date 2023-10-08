@@ -50,3 +50,15 @@ canvas {
   pointer-events: none;
   z-index: z('canvas');
 }
+
+[data-animation='title'],
+.oh {
+  display: inline-block;
+  overflow: hidden;
+
+  span {
+    display: inline-block;
+    vertical-align: top;
+    opacity: 0;
+  }
+}

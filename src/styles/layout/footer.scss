@@ -9,6 +9,10 @@
   padding: 32px;
   z-index: z('navigation');
 }
+.footer__left {
+  display: flex;
+  flex-direction: column;
+}
 
 .footer__left__title {
   @extend %title-32;
@@ -29,4 +33,5 @@
 
 .footer__right__link {
   @extend %title-24;
+  @extend %link;
 }

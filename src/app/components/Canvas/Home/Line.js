@@ -3,6 +3,8 @@ import * as THREE from 'three';
 
 import fragment from '../../../shaders/line-fragment.glsl';
 import vertex from '../../../shaders/line-vertex.glsl';
+import { COLOR_CARARRA } from '../../../utils/color';
+
 export default class Line {
   constructor({ element, index, total, scene, screen, viewport }) {
     this.element = element;
@@ -27,7 +29,7 @@ export default class Line {
       transparent: true,
       uniforms: {
         uAlpha: { value: 0 },
-        uColor: { value: new THREE.Color('#eae9e5') },
+        uColor: { value: new THREE.Color(COLOR_CARARRA) },
         uVelocity: { value: 0 },
         uViewportRes: {
           value: new THREE.Vector2(this.viewport.width, this.viewport.height),

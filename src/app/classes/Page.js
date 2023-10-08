@@ -4,7 +4,7 @@ import { each } from 'lodash';
 import Prefix from 'prefix';
 import gsap from 'gsap';
 
-import Highlight from '../animations/Highlight';
+import Text from '../animations/Text';
 import AsyncLoad from './AsyncLoad';
 import { Detection } from '../classes/Detection';
 import { clamp, lerp } from '../utils/math';
@@ -23,7 +23,7 @@ export default class Page extends EventEmitter {
       elements: {
         preloaders: '[data-src]',
 
-        animationsHighlights: '[data-animation="highlight"]',
+        animationsTexts: '[data-animation="text"]',
 
         ...elements,
       },
@@ -97,16 +97,13 @@ export default class Page extends EventEmitter {
    */
   createAnimations() {
     /**
-     * Highlight.
+     * Text.
      */
-    this.animationsHighlight = mapEach(
-      this.elements.animationsHighlights,
-      (element) => {
-        return new Highlight({ element });
-      }
-    );
+    this.animationsText = mapEach(this.elements.animationsTexts, (element) => {
+      return new Text({ element });
+    });
 
-    this.animations.push(...this.animationsHighlight);
+    this.animations.push(...this.animationsText);
   }
 
   /**
