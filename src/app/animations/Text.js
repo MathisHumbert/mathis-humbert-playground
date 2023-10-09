@@ -1,43 +1,64 @@
 import gsap from 'gsap';
 import SplitType from 'split-type';
+import each from 'lodash/each';
 
-import Animation from '../classes/Animation';
+import Component from '../classes/Animation';
 import { smooth } from '../utils/easing';
 import { wrapLines } from '../utils/text';
 
-export default class Text extends Animation {
+export default class Text extends Component {
   constructor({ element }) {
-    super({ element, elements: { spans: [] } });
+    super({ element, elements: { texts: [], spans: [] } });
 
-    this.elements.spans = new SplitType(this.element, {
-      types: 'lines',
-      tagName: 'span',
+    this.isAnimated = false;
+    this.elements.texts = this.element.querySelectorAll('p');
+    this.delay;
+    each(this.elements.texts, (text) => {
+      this.elements.spans.push(
+        new SplitType(text, {
+          types: 'lines',
+          tagName: 'span',
+        })
+      );
     });
 
-    wrapLines(this.elements.spans.lines, 'div', 'oh');
+    each(this.elements.spans, (span) => {
+      wrapLines(span.lines, 'div', 'oh');
+    });
   }
 
   animateIn() {
-    gsap.set(this.elements.spans.lines, { yPercent: 105, opacity: 1 });
-
-    gsap.to(this.elements.spans.lines, {
-      yPercent: 0,
-      duration: 0.7,
-      ease: smooth,
-      stagger: 0.05,
-      delay: this.delay,
+    each(this.elements.spans, (span, index) => {
+      gsap.fromTo(
+        span.lines,
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: 0.7,
+          ease: smooth,
+          stagger: 0.1,
+          delay: 0.1 + this.delay + index * 0.1,
+          onComplete: () => (this.isAnimated = true),
+        }
+      );
     });
-
-    super.animateIn();
   }
 
   animateOut() {
-    super.animateOut();
+    this.isAnimated = false;
   }
 
   onResize() {
-    this.elements.spans.split();
+    each(this.elements.spans, (span) => {
+      span.split();
 
-    wrapLines(this.elements.spans.lines, 'div', 'oh');
+      wrapLines(span.lines, 'div', 'oh');
+
+      if (!this.isAnimated) {
+        gsap.set(span.lines, {
+          opacity: 0,
+        });
+      }
+    });
   }
 }

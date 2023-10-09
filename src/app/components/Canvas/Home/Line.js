@@ -79,15 +79,26 @@ export default class Line {
   show() {
     this.isVisible = true;
 
-    gsap.fromTo(this.material.uniforms.uAlpha, { value: 0 }, { value: 0.2 });
+    gsap.fromTo(
+      this.material.uniforms.uAlpha,
+      { value: 0 },
+      { value: 0.2, duration: 0.7, delay: 0.5 + this.index * 0.06 }
+    );
   }
 
   hide() {
     this.isVisible = false;
 
-    gsap.to(this.material.uniforms.uAlpha, {
-      value: 0,
+    const tl = gsap.timeline({
+      onComplete: () =>
+        gsap.set(this.material.uniforms.uColor, {
+          value: new THREE.Color(COLOR_CARARRA),
+        }),
     });
+
+    tl.to(this.line.scale, { x: 1 })
+      .to(this.material.uniforms.uAlpha, { value: 0, duration: 0.7 }, 0)
+      .to(this.material.uniforms.uVelocity, { value: 0 }, 0.1);
   }
 
   showColor() {
@@ -110,9 +121,11 @@ export default class Line {
   }
 
   hideColor() {
-    gsap.to(this.line.scale, { x: 1 });
-    gsap.to(this.material.uniforms.uAlpha, { value: 0.2 });
-    gsap.to(this.material.uniforms.uVelocity, { value: 0 });
+    const tl = gsap.timeline();
+
+    tl.to(this.line.scale, { x: 1 })
+      .to(this.material.uniforms.uAlpha, { value: 0.2 }, 0)
+      .to(this.material.uniforms.uVelocity, { value: 0 }, 0.1);
   }
 
   /**

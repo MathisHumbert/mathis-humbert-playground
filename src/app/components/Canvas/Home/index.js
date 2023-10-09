@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import Media from './Media';
 import Line from './Line';
 import ProjectDom from './ProjectDom';
+import TrackDom from './TrackDom';
 import { clamp, lerp } from '../../../utils/math';
 import { COLOR_CARARRA, COLOR_COD_GRAY } from '../../../utils/color';
 import { Detection } from '../../../classes/Detection';
@@ -19,9 +20,8 @@ export default class Home {
 
     this.projectElements = document.querySelectorAll('.home__project');
     this.mediaElements = document.querySelectorAll('.home__project__media');
-    this.trackCurrentElement = document.querySelector('.home__track__current');
-    this.trackLineElement = document.querySelector('.home__track__line');
     this.lineElement = document.querySelector('.home__line');
+    this.trackLineElement = document.querySelector('.home__track__line');
 
     this.mediaGroup = new THREE.Group();
     this.linesGroup = new THREE.Group();
@@ -46,6 +46,7 @@ export default class Home {
     this.createMedia();
     this.createLine();
     this.createProjectDom();
+    this.createTrackDom();
   }
 
   createRaycast() {
@@ -98,6 +99,10 @@ export default class Home {
     );
   }
 
+  createTrackDom() {
+    this.trackDom = new TrackDom();
+  }
+
   reset() {
     const pxToRem = (this.screen.width / 1920) * 10;
 
@@ -129,9 +134,21 @@ export default class Home {
    * Animations.
    */
   show() {
+    this.scroll = {
+      position: 0,
+      current: 0,
+      target: 0,
+      limit: 0,
+      velocity: 0,
+      ease: 0.07,
+    };
+
     this.scene.add(this.mediaGroup);
     this.scene.add(this.linesGroup);
-    this.isVisible = true;
+
+    gsap.delayedCall(0.7, () => (this.isVisible = true));
+
+    gsap.fromTo(this.mediaGroup.position, { y: -2 }, { y: 0, duration: 1 });
 
     each(this.medias, (media) => {
       if (media && media.show) {
@@ -144,13 +161,42 @@ export default class Home {
         line.show();
       }
     });
+
+    this.trackDom.show();
   }
 
   hide() {
-    this.scene.remove(this.mediaGroup);
-    this.scene.remove(this.linesGroup);
-
     this.isVisible = false;
+
+    gsap.delayedCall(1, () => {
+      this.scene.remove(this.mediaGroup);
+      this.scene.remove(this.linesGroup);
+
+      if (this.isDetailed) {
+        each(this.medias, (media) => {
+          if (media && media.onClose) {
+            media.onClose();
+          }
+        });
+
+        each(this.lines, (line) => {
+          line.material.uniforms.uColor.value = new THREE.Color(COLOR_CARARRA);
+        });
+      }
+
+      this.isDetailed = false;
+      this.detailedIndex = null;
+      this.currentIndex = null;
+      this.hoverIndex = null;
+    });
+
+    if (this.isDetailed) {
+      this.projectsDom[this.detailedIndex].hide();
+    }
+
+    gsap.to(this.trackLineElement, {
+      background: COLOR_CARARRA,
+    });
 
     each(this.medias, (media) => {
       if (media && media.hide) {
@@ -163,6 +209,8 @@ export default class Home {
         line.hide();
       }
     });
+
+    this.trackDom.hide();
   }
 
   /**
@@ -309,8 +357,7 @@ export default class Home {
       this.lines[index].showColor();
     }
 
-    this.trackCurrentElement.textContent =
-      index + 1 < 10 ? `0${index + 1}` : index + 1;
+    this.trackDom.onChange(index);
 
     this.currentIndex = index;
   }

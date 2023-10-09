@@ -4,6 +4,6 @@
       ul.about__information__list
         each item, index in prismic.about.data.information
           li.about__information__item
-            h6.about__information__item__title(data-animation="highlight" data-delay=`${index * 0.1}`)=item.title
-            .about__information__item__text!=prismic.asHTML(item.text).replace(/<p>/g, `<p data-animation="text" data-delay=${0.1 + index * 0.1}>`)
+            h6.about__information__item__title(data-animation="highlight" data-delay=`${index * 0.2}`)=item.title
+            .about__information__item__text(data-animation="text" data-delay=`${0.1 + index * 0.25}`)!=prismic.asHTML(item.text).replace(/<p>/g, '<p class="text">')
     h1.about__title!=prismic.asHTML(prismic.about.data.title).replace(/<p>/g, '<p data-animation="highlight">')

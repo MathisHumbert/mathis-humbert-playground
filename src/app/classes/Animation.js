@@ -16,6 +16,7 @@ export default class {
     this.transformPrefix = Prefix('transform');
 
     this.isVisible = false;
+    this.isAnimated = false;
   }
 
   createAnimation() {
@@ -56,6 +57,7 @@ export default class {
   }
 
   animateOut() {
+    this.isAnimated = false;
     this.isVisible = false;
   }
 }

@@ -5,10 +5,13 @@ import Prefix from 'prefix';
 import gsap from 'gsap';
 
 import Text from '../animations/Text';
+import Highlight from '../animations/Highlight';
 import AsyncLoad from './AsyncLoad';
 import { Detection } from '../classes/Detection';
 import { clamp, lerp } from '../utils/math';
 import { mapEach } from '../utils/dom';
+import { smooth } from '../utils/easing';
+import { COLOR_CARARRA, COLOR_COD_GRAY } from '../utils/color';
 
 export default class Page extends EventEmitter {
   constructor({ classes, id, element, elements, isScrollable = true }) {
@@ -23,7 +26,8 @@ export default class Page extends EventEmitter {
       elements: {
         preloaders: '[data-src]',
 
-        animationsTexts: '[data-animation="text"]',
+        // animationsTexts: '[data-animation="text"]',
+        animationsHighlights: '[data-animation="highlight"]',
 
         ...elements,
       },
@@ -99,11 +103,21 @@ export default class Page extends EventEmitter {
     /**
      * Text.
      */
-    this.animationsText = mapEach(this.elements.animationsTexts, (element) => {
-      return new Text({ element });
-    });
+    // this.animationsText = mapEach(this.elements.animationsTexts, (element) => {
+    //   return new Text({ element });
+    // });
 
-    this.animations.push(...this.animationsText);
+    /**
+     * Highlight.
+     */
+    this.animationsHighlight = mapEach(
+      this.elements.animationsHighlights,
+      (element) => {
+        return new Highlight({ element });
+      }
+    );
+
+    this.animations.push(...this.animationsHighlight);
   }
 
   /**
@@ -169,11 +183,21 @@ export default class Page extends EventEmitter {
 
     each(this.animations, (animation) => animation.createAnimation());
 
+    gsap.to(
+      document.documentElement,
+      {
+        backgroundColor: COLOR_COD_GRAY,
+        color: COLOR_CARARRA,
+        duration: 0.7,
+        ease: smooth,
+      },
+      0
+    );
+    gsap.to(this.element, { autoAlpha: 1, duration: 0.7, ease: smooth }, 0);
+
     this.isVisible = true;
 
     this.addEventListeners();
-
-    return Promise.resolve();
   }
 
   hide() {
@@ -183,7 +207,17 @@ export default class Page extends EventEmitter {
 
     each(this.animations, (animation) => animation.destroyAnimation());
 
-    return Promise.resolve();
+    return new Promise((res) => {
+      gsap.to(this.element, {
+        autoAlpha: 0,
+        duration: 0.7,
+        ease: smooth,
+        onComplete: () => {
+          res();
+          each(this.animations, (animation) => animation.destroyAnimation());
+        },
+      });
+    });
   }
 
   transform(element, y) {

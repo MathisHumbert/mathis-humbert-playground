@@ -5,6 +5,7 @@ import EventEmitter from 'events';
 
 import fragment from '../../../shaders/media-fragment.glsl';
 import vertex from '../../../shaders/media-vertex.glsl';
+import { smooth, translate } from '../../../utils/easing';
 
 export default class Media extends EventEmitter {
   constructor({ element, index, scene, geometry, screen, viewport }) {
@@ -85,6 +86,9 @@ export default class Media extends EventEmitter {
       this.viewport.width,
       this.viewport.height
     );
+
+    this.updateScale();
+    this.updateY();
   }
 
   /**
@@ -138,8 +142,24 @@ export default class Media extends EventEmitter {
   show() {
     this.isVisible = true;
 
-    gsap.fromTo(this.material.uniforms.uAlpha, { value: 0 }, { value: 0.2 });
-    gsap.fromTo(this.material.uniforms.uColor, { value: 0 }, { value: 0 });
+    gsap.fromTo(
+      this.material.uniforms.uAlpha,
+      { value: 0 },
+      {
+        value: 0.2,
+        duration: 0.7,
+        delay: 0.3,
+      }
+    );
+    gsap.fromTo(
+      this.material.uniforms.uColor,
+      { value: 0 },
+      {
+        value: 0,
+        duration: 0.7,
+        delay: 0.3,
+      }
+    );
   }
 
   hide() {
@@ -147,17 +167,36 @@ export default class Media extends EventEmitter {
 
     gsap.to(this.material.uniforms.uAlpha, {
       value: 0,
+      duration: 0.7,
     });
   }
 
   showColor() {
-    gsap.to(this.material.uniforms.uAlpha, { value: 1 });
-    gsap.to(this.material.uniforms.uColor, { value: 1 });
+    gsap.to(this.material.uniforms.uAlpha, {
+      value: 1,
+      duration: 0.7,
+      ease: 'power3.out',
+    });
+
+    gsap.to(this.material.uniforms.uColor, {
+      value: 1,
+      duration: 0.7,
+      ease: 'power3.out',
+    });
   }
 
   hideColor() {
-    gsap.to(this.material.uniforms.uAlpha, { value: 0.2 });
-    gsap.to(this.material.uniforms.uColor, { value: 0 });
+    gsap.to(this.material.uniforms.uAlpha, {
+      value: 0.2,
+      duration: 0.7,
+      ease: 'power3.out',
+    });
+
+    gsap.to(this.material.uniforms.uColor, {
+      value: 0,
+      duration: 0.7,
+      ease: 'power3.out',
+    });
   }
 
   onOpen() {

@@ -91,6 +91,13 @@
 
 .home__track__current {
   @extend %title-20;
+
+  overflow: hidden;
+
+  span {
+    display: inline-block;
+    vertical-align: top;
+  }
 }
 
 .home__track__line {
