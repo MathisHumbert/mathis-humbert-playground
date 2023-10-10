@@ -7,6 +7,8 @@
   background: $color-cod-gray;
   color: $color-cararra;
   text-align: center;
+  opacity: 0;
+  visibility: hidden;
   z-index: z('preloader');
 }
 

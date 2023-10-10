@@ -47,6 +47,8 @@ export default class Preloader extends Component {
   }
 
   createLoader() {
+    gsap.set(this.element, { autoAlpha: 1 });
+
     each(this.animationsHighlight, (element) => {
       element.animateIn();
     });
@@ -84,7 +86,6 @@ export default class Preloader extends Component {
 
     if (percent === 1) {
       gsap.delayedCall(2, () => this.onLoaded());
-      // this.onLoaded();
     }
   }
 
