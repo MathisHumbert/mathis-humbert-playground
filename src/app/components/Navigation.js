@@ -50,6 +50,8 @@ export default class Navigation extends Component {
   }
 
   show() {
+    gsap.set([this.elements.nav, this.elements.footer], { autoAlpha: 1 });
+
     each(this.elements.animationsLink, (link) => {
       if (link.href === '/' || link.href === '/about') {
         if (link.href !== this.template) {
