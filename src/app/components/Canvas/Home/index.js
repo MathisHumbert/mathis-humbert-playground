@@ -335,7 +335,7 @@ export default class Home {
       return;
     }
 
-    const speed = normalized.pixelY * 0.5;
+    const speed = normalized.pixelY;
 
     this.scroll.target += speed;
   }
