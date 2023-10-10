@@ -42,6 +42,18 @@
     @extend %title-96;
     @extend %animation-text;
   }
+
+  @include media('<phone') {
+    left: 12.5rem;
+
+    h3 {
+      font-size: 5.8rem;
+    }
+
+    p {
+      font-size: 4.8rem;
+    }
+  }
 }
 
 .home__project__infos {
@@ -53,6 +65,10 @@
   flex-direction: column;
   gap: 1.2rem;
   max-width: 20rem;
+
+  @include media('<phone') {
+    display: none;
+  }
 }
 
 .home__project__info {
@@ -87,6 +103,10 @@
   flex-direction: column;
   align-items: center;
   gap: 0.6rem;
+
+  @include media('<phone') {
+    left: 5.8rem;
+  }
 }
 
 .home__track__current {

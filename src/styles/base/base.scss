@@ -18,6 +18,7 @@ html {
   -webkit-font-smoothing: antialiased;
 
   @include media('<phone') {
+    font-size: calc(100vw / 768 * 10);
   }
 }
 
@@ -52,11 +53,24 @@ canvas {
 }
 
 [data-animation='title'],
-.oh {
+[data-animation='navigation-title'],
+[data-animation='description'] .oh {
   display: inline-block;
   overflow: hidden;
 
   span {
+    display: inline-block;
+    vertical-align: top;
+  }
+}
+
+[data-animation='highlight'] {
+  .char__wrap {
+    display: block;
+    overflow: hidden;
+  }
+
+  .char {
     display: inline-block;
     vertical-align: top;
   }

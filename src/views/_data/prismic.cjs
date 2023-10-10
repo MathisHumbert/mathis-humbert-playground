@@ -34,20 +34,28 @@ const client = prismic.createClient(PRISMIC_REPO, {
   fetch: axiosAdapter,
 });
 
-async function fetchNav() {
-  return client.getSingle('nav');
+async function fetchAbout() {
+  return client.getSingle('about');
 }
 
 async function fetchFooter() {
   return client.getSingle('footer');
 }
 
-async function fetchProjects() {
-  return client.getAllByType('project');
+async function fetchMeta() {
+  return client.getSingle('meta');
 }
 
-async function fetchAbout() {
-  return client.getSingle('about');
+async function fetchNav() {
+  return client.getSingle('nav');
+}
+
+async function fetchPreloader() {
+  return client.getSingle('preloader');
+}
+
+async function fetchProjects() {
+  return client.getAllByType('project');
 }
 
 function gatherAssets(projects) {
@@ -61,11 +69,13 @@ function gatherAssets(projects) {
 }
 
 async function fetchPrismicData() {
-  const [nav, footer, projects, about] = await Promise.all([
-    fetchNav(),
-    fetchFooter(),
-    fetchProjects(),
+  const [about, footer, meta, nav, preloader, projects] = await Promise.all([
     fetchAbout(),
+    fetchFooter(),
+    fetchMeta(),
+    fetchNav(),
+    fetchPreloader(),
+    fetchProjects(),
   ]);
 
   const assets = gatherAssets(projects);
@@ -73,8 +83,10 @@ async function fetchPrismicData() {
   const data = {
     assets,
     about,
-    nav,
     footer,
+    meta,
+    nav,
+    preloader,
     projects: projects.sort((a, b) => b.data.id - a.data.id),
     ...prismicH,
   };

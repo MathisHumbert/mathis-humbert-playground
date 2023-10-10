@@ -13,8 +13,8 @@ export default class Navigation extends Component {
       elements: {
         nav: '.nav',
         footer: '.footer',
-        links: '[data-animation="link"]',
-        titles: '[data-animation="title"]',
+        links: '[data-animation="navigation-link"]',
+        titles: '[data-animation="navigation-title"]',
       },
     });
 

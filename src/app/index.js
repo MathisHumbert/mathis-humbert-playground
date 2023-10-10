@@ -228,12 +228,9 @@ class App {
   }
 }
 
-new App();
+const satoshiFont = new FontFaceObserver('Satoshi');
+const bebasNeueFont = new FontFaceObserver('Bebas Neue');
 
-// Uncomment and add website's fonts
-// const font1 = new FontFaceObserver('Font1');
-// const font2 = new FontFaceObserver('Font2');
-
-// Promise.all([font1, font2])
-//   .then(() => new App())
-//   .catch(() => new App());
+Promise.all([satoshiFont, bebasNeueFont])
+  .then(() => new App())
+  .catch(() => new App());

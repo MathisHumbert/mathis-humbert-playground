@@ -4,7 +4,7 @@ import SplitType from 'split-type';
 import Component from '../classes/Component';
 import { smooth } from '../utils/easing';
 
-export default class SlowText extends Component {
+export default class Title extends Component {
   constructor({ element }) {
     super({ element, elements: { spans: [] } });
 
@@ -14,22 +14,31 @@ export default class SlowText extends Component {
     }).words;
 
     this.delay = Number(this.element.getAttribute('data-delay'));
+
+    this.animateOut();
   }
 
   animateIn() {
-    gsap.to(this.elements.spans, {
-      yPercent: 0,
-      rotate: 0,
-      duration: 1,
-      delay: this.delay,
-      stagger: 0.1,
-      ease: smooth,
-    });
+    gsap.fromTo(
+      this.elements.spans,
+      {
+        yPercent: 130,
+        rotate: '5deg',
+      },
+      {
+        yPercent: 0,
+        rotate: 0,
+        duration: 1,
+        delay: this.delay,
+        stagger: 0.1,
+        ease: smooth,
+      }
+    );
   }
 
   animateOut() {
     gsap.set(this.elements.spans, {
-      yPercent: 115,
+      yPercent: 130,
       rotate: '5deg',
     });
   }

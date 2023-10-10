@@ -8,6 +8,10 @@
   align-items: flex-end;
   padding: 32px;
   z-index: z('navigation');
+
+  @include media('<phone') {
+    padding: 24px;
+  }
 }
 .footer__left {
   display: flex;

@@ -4,6 +4,8 @@
       ul.about__information__list
         each item, index in prismic.about.data.information
           li.about__information__item
-            h6.about__information__item__title(data-animation="highlight" data-delay=`${index * 0.2}`)=item.title
+            h6.about__information__item__title(data-animation="title" data-delay=`${index * 0.2}`)=item.title
             .about__information__item__text(data-animation="text" data-delay=`${0.1 + index * 0.25}`)!=prismic.asHTML(item.text).replace(/<p>/g, '<p class="text">')
-    h1.about__title!=prismic.asHTML(prismic.about.data.title).replace(/<p>/g, '<p data-animation="highlight">')
+        li.about__information__item
+          a.about__information__item__link(href=prismic.about.data.link.url target='_blank' data-animation="link" data-delay=0.8) Learn more about me
+    h1.about__title!=prismic.asHTML(prismic.about.data.title).replace(/<p>/g, `<p data-animation="highlight">`)
