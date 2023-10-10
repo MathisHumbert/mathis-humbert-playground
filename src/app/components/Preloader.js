@@ -6,7 +6,6 @@ import Component from '../classes/Component';
 import Highlight from '../animations/Highlight';
 import Description from '../animations/Description';
 import { mapEach } from '../utils/dom';
-import { smooth } from '../utils/easing';
 
 export default class Preloader extends Component {
   constructor() {
@@ -15,7 +14,6 @@ export default class Preloader extends Component {
       elements: {
         animationsHighlights: '[data-animation="highlight"]',
         animationsDescriptions: '[data-animation="description"]',
-        number: '.preloader__number',
       },
     });
 
@@ -25,7 +23,7 @@ export default class Preloader extends Component {
 
     this.createAnimations();
 
-    gsap.delayedCall(0.2, () => this.createLoader());
+    gsap.delayedCall(0.4, () => this.createLoader());
   }
 
   createAnimations() {
@@ -42,8 +40,6 @@ export default class Preloader extends Component {
         return new Description({ element });
       }
     );
-
-    gsap.set(this.elements.number, { opacity: 0 });
   }
 
   createLoader() {
@@ -56,14 +52,6 @@ export default class Preloader extends Component {
     each(this.animationsDescription, (element) => {
       element.onResize();
       element.animateIn();
-    });
-
-    gsap.to(this.elements.number, {
-      opacity: 1,
-      delay: 0.4,
-      duration: 1,
-      stagger: 0.1,
-      ease: smooth,
     });
 
     const textureLoader = new THREE.TextureLoader();
@@ -82,10 +70,8 @@ export default class Preloader extends Component {
 
     const percent = this.textureLoaded / this.totalAssets;
 
-    this.elements.number.textContent = `${Math.round(percent * 100)}%`;
-
     if (percent === 1) {
-      gsap.delayedCall(2, () => this.onLoaded());
+      gsap.delayedCall(3, () => this.onLoaded());
     }
   }
 
@@ -98,16 +84,9 @@ export default class Preloader extends Component {
       element.animateOut();
     });
 
-    gsap.to(this.elements.number, {
-      opacity: 0,
-      delay: 0.2,
-      duration: 1,
-      stagger: 0.1,
-      ease: smooth,
-      onComplete: () => {
-        this.element.remove();
-        this.emit('loaded');
-      },
+    gsap.delayedCall(0.5, () => {
+      this.element.remove();
+      this.emit('loaded');
     });
   }
 }
