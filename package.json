@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "clean": "rm -rf _site",
-    "dev": "yarn run clean && eleventy --config=.eleventy.cjs --serve --incremental",
-    "build": "yarn run clean && eleventy --config=.eleventy.cjs"
+    "dev": "npm run clean && eleventy --config=.eleventy.cjs --serve --incremental",
+    "build": "npm run clean && eleventy --config=.eleventy.cjs"
   },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1",
