@@ -9,10 +9,10 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
- 
+
       - name: Build the website
         run: npm run build
-      
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -23,3 +23,10 @@ jobs:
       - name: Upload files to S3 with AWS CLI
         run: |
           aws s3 sync _site/ s3://${{ secrets.S3_BUCKET }} --delete
+
+      - name: Wait before invalidating CloudFront cache
+        run: sleep 60
+
+      - name: Invalidate CloudFront cache for all paths
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_ID }} --paths "/*"

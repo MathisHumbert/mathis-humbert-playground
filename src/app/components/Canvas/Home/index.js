@@ -260,15 +260,11 @@ export default class Home {
 
     if (!Detection.isMobile) return;
 
-    this.scroll.position = this.scroll.current;
-    this.start = event.touches ? event.touches[0].clientY : event.clientY;
-  }
+    const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+    const clientY = event.touches ? event.touches[0].clientY : event.clientY;
 
-  onTouchMove(event) {
-    if (!this.isVisible) return;
-
-    this.pointer.x = (event.clientX / this.screen.width) * 2 - 1;
-    this.pointer.y = -(event.clientY / this.screen.height) * 2 + 1;
+    this.pointer.x = (clientX / this.screen.width) * 2 - 1;
+    this.pointer.y = -(clientY / this.screen.height) * 2 + 1;
 
     this.raycaster.setFromCamera(this.pointer, this.camera);
 
@@ -280,36 +276,64 @@ export default class Home {
       const object = intersects[0].object;
 
       if (object.index !== this.hoverIndex) {
-        if (this.hoverIndex !== null) {
-          this.medias[this.hoverIndex].onMouseLeave();
-        }
-
         this.hoverIndex = object.index;
-
-        this.medias[this.hoverIndex].onMouseEnter();
-        document.body.style.cursor = 'pointer';
       }
     } else if (this.hoverIndex !== null) {
-      this.medias[this.hoverIndex].onMouseLeave();
-      document.body.style.cursor = '';
-
       this.hoverIndex = null;
     }
 
-    if (!Detection.isMobile) return;
+    this.scroll.position = this.scroll.current;
+    this.start = event.touches ? event.touches[0].clientY : event.clientY;
+  }
 
-    if (this.isDown && this.isDetailed && !this.isAnimating) {
-      this.onClose(this.currentIndex);
+  onTouchMove(event) {
+    if (!this.isVisible) return;
 
-      return;
+    if (Detection.isMobile) {
+      if (this.isDown && this.isDetailed && !this.isAnimating) {
+        this.onClose(this.currentIndex);
+
+        return;
+      }
+
+      if (!this.isDown || this.isDetailed) return;
+
+      this.hoverIndex = null;
+
+      const y = event.touches ? event.touches[0].clientY : event.clientY;
+      const distance = (this.start - y) * 3;
+
+      this.scroll.target = this.scroll.position + distance;
+    } else {
+      this.pointer.x = (event.clientX / this.screen.width) * 2 - 1;
+      this.pointer.y = -(event.clientY / this.screen.height) * 2 + 1;
+
+      this.raycaster.setFromCamera(this.pointer, this.camera);
+
+      const intersects = this.raycaster.intersectObjects(
+        this.scene.children[0].children
+      );
+
+      if (intersects.length > 0) {
+        const object = intersects[0].object;
+
+        if (object.index !== this.hoverIndex) {
+          if (this.hoverIndex !== null) {
+            this.medias[this.hoverIndex].onMouseLeave();
+          }
+
+          this.hoverIndex = object.index;
+
+          this.medias[this.hoverIndex].onMouseEnter();
+          document.body.style.cursor = 'pointer';
+        }
+      } else if (this.hoverIndex !== null) {
+        this.medias[this.hoverIndex].onMouseLeave();
+        document.body.style.cursor = '';
+
+        this.hoverIndex = null;
+      }
     }
-
-    if (!this.isDown || this.isDetailed) return;
-
-    const y = event.touches ? event.touches[0].clientY : event.clientY;
-    const distance = (this.start - y) * 3;
-
-    this.scroll.target = this.scroll.position + distance;
   }
 
   onTouchUp() {
