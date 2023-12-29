@@ -3,7 +3,6 @@ require('dotenv').config();
 const prismicH = require('@prismicio/helpers');
 const prismic = require('@prismicio/client');
 const axios = require('axios');
-const amplify = require('aws-amplify/utils');
 
 const PRISMIC_REPO = process.env.PRISMIC_REPOSITORY;
 const PRISMIC_TOKEN = process.env.PRISMIC_ACCESS_TOKEN;
@@ -94,7 +93,5 @@ async function fetchPrismicData() {
 
   return data;
 }
-
-amplify.Cache.clear();
 
 module.exports = fetchPrismicData;

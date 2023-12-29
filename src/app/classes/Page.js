@@ -162,7 +162,7 @@ export default class Page extends EventEmitter {
     gsap.to(
       document.documentElement,
       {
-        backgroundColor: 'red',
+        backgroundColor: 'blue',
         color: COLOR_CARARRA,
         duration: 0.7,
         ease: smooth,
