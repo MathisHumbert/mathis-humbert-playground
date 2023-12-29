@@ -43,16 +43,16 @@ export default class Preloader extends Component {
   }
 
   createLoader() {
-    // gsap.set(this.element, { autoAlpha: 1 });
+    gsap.set(this.element, { autoAlpha: 1 });
 
-    // each(this.animationsHighlight, (element) => {
-    //   element.animateIn();
-    // });
+    each(this.animationsHighlight, (element) => {
+      element.animateIn();
+    });
 
-    // each(this.animationsDescription, (element) => {
-    //   element.onResize();
-    //   element.animateIn();
-    // });
+    each(this.animationsDescription, (element) => {
+      element.onResize();
+      element.animateIn();
+    });
 
     const textureLoader = new THREE.TextureLoader();
 
@@ -71,25 +71,22 @@ export default class Preloader extends Component {
     const percent = this.textureLoaded / this.totalAssets;
 
     if (percent === 1) {
-      this.onLoaded();
-      // gsap.delayedCall(3, () => this.onLoaded());
+      gsap.delayedCall(2, () => this.onLoaded());
     }
   }
 
   onLoaded() {
-    this.emit('loaded');
+    each(this.animationsHighlight, (element) => {
+      element.animateOut();
+    });
 
-    // each(this.animationsHighlight, (element) => {
-    //   element.animateOut();
-    // });
+    each(this.animationsDescription, (element) => {
+      element.animateOut();
+    });
 
-    // each(this.animationsDescription, (element) => {
-    //   element.animateOut();
-    // });
-
-    // gsap.delayedCall(0.5, () => {
-    //   this.element.remove();
-    //   this.emit('loaded');
-    // });
+    gsap.delayedCall(0.6, () => {
+      this.element.remove();
+      this.emit('loaded');
+    });
   }
 }
