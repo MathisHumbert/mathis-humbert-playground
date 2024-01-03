@@ -23,7 +23,7 @@ export default class Preloader extends Component {
 
     this.createAnimations();
 
-    gsap.delayedCall(0.4, () => this.createLoader());
+    this.createLoader();
   }
 
   createAnimations() {

@@ -235,6 +235,6 @@ class App {
 const satoshiFont = new FontFaceObserver('Satoshi');
 const bebasNeueFont = new FontFaceObserver('Bebas Neue');
 
-Promise.all([satoshiFont, bebasNeueFont])
+Promise.all([satoshiFont.load(), bebasNeueFont.load()])
   .then(() => new App())
   .catch(() => new App());
