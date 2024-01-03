@@ -71,7 +71,7 @@ export default class Preloader extends Component {
     const percent = this.textureLoaded / this.totalAssets;
 
     if (percent === 1) {
-      gsap.delayedCall(2, () => this.onLoaded());
+      gsap.delayedCall(0, () => this.onLoaded());
     }
   }
 
