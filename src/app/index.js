@@ -232,6 +232,8 @@ class App {
   }
 }
 
+console.log('app');
+
 const satoshiFont = new FontFaceObserver('Satoshi');
 const bebasNeueFont = new FontFaceObserver('Bebas Neue');
 
