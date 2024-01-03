@@ -23,16 +23,6 @@ module.exports = function (eleventyConfig) {
       root: 'src',
       // List of Vite plugins to use
       plugins: [
-        // PWA (Progressive Web App) settings using VitePWA plugin
-        // VitePWA({
-        //   injectRegister: 'script',
-        //   registerType: 'autoUpdate',
-        //   includeAssets: [],
-        //   workbox: {
-        //     globPatterns: ['**/*.{js,css,html,png,jpg,svg,woff,woff2}'],
-        //   },
-        //   cacheId: (Math.random() * 1000).toString(),
-        // }),
         // GLSL (OpenGL Shading Language) support using glslifyPlugin
         glslifyPlugin(),
       ],
