@@ -3,7 +3,7 @@ const path = require('path');
 const htmlmin = require('html-minifier');
 const EleventyVitePlugin = require('@11ty/eleventy-plugin-vite');
 const glslifyPlugin = require('vite-plugin-glslify').default;
-const { VitePWA } = require('`vite-plugin-pwa`');
+const { VitePWA } = require('vite-plugin-pwa');
 
 module.exports = function (eleventyConfig) {
   // Configuring the Eleventy server to run on port 3000
