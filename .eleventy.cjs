@@ -3,6 +3,7 @@ const path = require('path');
 const htmlmin = require('html-minifier');
 const EleventyVitePlugin = require('@11ty/eleventy-plugin-vite');
 const glslifyPlugin = require('vite-plugin-glslify').default;
+const { VitePWA } = require('`vite-plugin-pwa`');
 
 module.exports = function (eleventyConfig) {
   // Configuring the Eleventy server to run on port 3000
@@ -23,6 +24,16 @@ module.exports = function (eleventyConfig) {
       // List of Vite plugins to use
       plugins: [
         // GLSL (OpenGL Shading Language) support using glslifyPlugin
+        // PWA (Progressive Web App) settings using VitePWA plugin
+        VitePWA({
+          // injectRegister: 'script',
+          registerType: 'autoUpdate',
+          // includeAssets: [],
+          workbox: {
+            globPatterns: ['**/*.{js,css,html,png,jpg,svg,woff,woff2}'],
+          },
+          // cacheId: (Math.random() * 1000).toString(),
+        }),
         glslifyPlugin(),
       ],
 

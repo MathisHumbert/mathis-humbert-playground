@@ -19,7 +19,8 @@
     "pug": "^3.0.2",
     "sass": "^1.66.1",
     "vite": "^4.4.5",
-    "vite-plugin-glslify": "^2.0.2"
+    "vite-plugin-glslify": "^2.0.2",
+    "vite-plugin-pwa": "^0.17.4"
   },
   "dependencies": {
     "auto-bind": "^5.0.1",
