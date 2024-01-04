@@ -1,6 +1,7 @@
 if ('serviceWorker' in navigator) {
-  console.log('hello');
-  // window.addEventListener('load', () => {
-  //   navigator.serviceWorker.register('/sw.js', { scope: '/' });
-  // });
+  navigator.serviceWorker.getRegistrations().then(function (registrations) {
+    for (let registration of registrations) {
+      registration.unregister();
+    }
+  });
 }
