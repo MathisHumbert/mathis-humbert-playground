@@ -16,14 +16,15 @@ module.exports = function (eleventyConfig) {
       root: 'src',
       plugins: [
         VitePWA({
+          injectRegister: 'script',
           registerType: 'autoUpdate',
+          includeAssets: [],
           workbox: {
             globPatterns: ['**/*.{js,css,html,png,jpg,svg,woff,woff2}'],
           },
         }),
         glslifyPlugin(),
       ],
-
       resolve: {
         alias: {
           '@styles': path.resolve('.', '/src/styles'),
