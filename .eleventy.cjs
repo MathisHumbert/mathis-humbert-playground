@@ -17,6 +17,7 @@ module.exports = function (eleventyConfig) {
       plugins: [
         VitePWA({
           registerType: 'autoUpdate',
+          strategies: 'injectManifest',
           workbox: {
             cleanupOutdatedCaches: true,
             globPatterns: ['**/*.{js,css,html,png,jpg,svg,woff,woff2}'],
