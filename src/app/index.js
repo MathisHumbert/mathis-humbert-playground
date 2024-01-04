@@ -232,7 +232,7 @@ class App {
   }
 }
 
-console.log('pwa app');
+console.log('testing updating pwa app');
 
 const satoshiFont = new FontFaceObserver('Satoshi');
 const bebasNeueFont = new FontFaceObserver('Bebas Neue');
