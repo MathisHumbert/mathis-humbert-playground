@@ -21,6 +21,7 @@ module.exports = function (eleventyConfig) {
           workbox: {
             cleanupOutdatedCaches: true,
             globPatterns: ['**/*.{js,css,html,png,jpg,svg,woff,woff2}'],
+            cacheId: Math.random() * 1000,
           },
         }),
         glslifyPlugin(),
