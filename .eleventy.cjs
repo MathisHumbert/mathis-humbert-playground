@@ -19,8 +19,6 @@ module.exports = function (eleventyConfig) {
           registerType: 'autoUpdate',
           workbox: {
             globPatterns: ['**/*.{js,css,html,png,jpg,svg,woff,woff2}'],
-            swDest: '_site/sw.js',
-            // revision: 'v1.1.0',
           },
         }),
         glslifyPlugin(),
