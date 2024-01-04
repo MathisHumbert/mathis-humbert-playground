@@ -16,10 +16,7 @@ module.exports = function (eleventyConfig) {
       root: 'src',
       plugins: [
         VitePWA({
-          registerType: 'autoUpdate',
-          workbox: {
-            globPatterns: ['**/*.{js,css,html,png,jpg,svg,woff,woff2}'],
-          },
+          selfDestroying: true,
         }),
         glslifyPlugin(),
       ],

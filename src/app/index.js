@@ -232,7 +232,7 @@ class App {
   }
 }
 
-console.log('test delete pwa app');
+console.log('test not using pwa app');
 
 const satoshiFont = new FontFaceObserver('Satoshi');
 const bebasNeueFont = new FontFaceObserver('Bebas Neue');
