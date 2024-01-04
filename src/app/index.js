@@ -232,6 +232,8 @@ class App {
   }
 }
 
+console.log('removed pwa');
+
 const satoshiFont = new FontFaceObserver('Satoshi');
 const bebasNeueFont = new FontFaceObserver('Bebas Neue');
 

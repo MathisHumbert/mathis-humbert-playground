@@ -25,15 +25,15 @@ module.exports = function (eleventyConfig) {
       plugins: [
         // GLSL (OpenGL Shading Language) support using glslifyPlugin
         // PWA (Progressive Web App) settings using VitePWA plugin
-        VitePWA({
-          // injectRegister: 'script',
-          registerType: 'autoUpdate',
-          // includeAssets: [],
-          workbox: {
-            globPatterns: ['**/*.{js,css,html,png,jpg,svg,woff,woff2}'],
-          },
-          // cacheId: (Math.random() * 1000).toString(),
-        }),
+        // VitePWA({
+        //   // injectRegister: 'script',
+        //   registerType: 'autoUpdate',
+        //   // includeAssets: [],
+        //   workbox: {
+        //     globPatterns: ['**/*.{js,css,html,png,jpg,svg,woff,woff2}'],
+        //   },
+        //   // cacheId: (Math.random() * 1000).toString(),
+        // }),
         glslifyPlugin(),
       ],
 
