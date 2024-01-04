@@ -19,6 +19,7 @@ module.exports = function (eleventyConfig) {
           injectRegister: 'script',
           registerType: 'autoUpdate',
           includeAssets: [],
+          filename: 'service-worker.js',
           workbox: {
             globPatterns: ['**/*.{js,css,html,png,jpg,svg,woff,woff2}'],
           },
