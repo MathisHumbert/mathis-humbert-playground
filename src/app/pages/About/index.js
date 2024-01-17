@@ -6,6 +6,9 @@ import Text from '../../animations/Text';
 import Title from '../../animations/Title';
 import Highlight from '../../animations/Highlight';
 import Link from '../../animations/Link';
+import Y from '../../animations/Y';
+import Line from '../../animations/Line';
+
 import { mapEach } from '../../utils/dom';
 
 export default class About extends Page {
@@ -20,6 +23,8 @@ export default class About extends Page {
         animationsTitles: '[data-animation="title"]',
         animationsHighlights: '[data-animation="highlight"]',
         animationsLinks: '[data-animation="link"]',
+        animationsY: '[data-animation="y"]',
+        animationsLine: '[data-animation="line"]',
       },
     });
 
@@ -41,10 +46,26 @@ export default class About extends Page {
       }
     );
 
-    this.animationsLink = mapEach(
-      this.elements.animationsLinks,
+    this.animationsLink = mapEach(this.elements.animationsLinks, (element) => {
+      return new Link({ element });
+    });
+
+    this.animationsY = mapEach(this.elements.animationsY, (element, index) => {
+      return new Y({
+        element,
+        index: index === undefined ? 0 : index,
+        delay: 0.9,
+      });
+    });
+
+    this.animationsLine = mapEach(
+      this.elements.animationsLine,
       (element, index) => {
-        return new Link({ element });
+        return new Line({
+          element,
+          index: index === undefined ? 0 : index,
+          delay: 0.9,
+        });
       }
     );
 
@@ -72,6 +93,14 @@ export default class About extends Page {
     });
 
     each(this.animationsLink, (element) => {
+      element.animateIn();
+    });
+
+    each(this.animationsY, (element) => {
+      element.animateIn();
+    });
+
+    each(this.animationsLine, (element) => {
       element.animateIn();
     });
 

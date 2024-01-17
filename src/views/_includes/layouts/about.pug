@@ -1,11 +1,22 @@
 .about
   .about__wrapper
     section.about__information
-      ul.about__information__list
+      div.about__information__list
         each item, index in prismic.about.data.information
-          li.about__information__item
+          article.about__information__item
             h6.about__information__item__title(data-animation="title" data-delay=`${index * 0.2}`)=item.title
             .about__information__item__text(data-animation="text" data-delay=`${0.1 + index * 0.25}`)!=prismic.asHTML(item.text).replace(/<p>/g, '<p class="text">')
-        li.about__information__item
-          a.about__information__item__link(href=prismic.about.data.link.url target='_blank' data-animation="link" data-delay=0.8) Learn more about me
+        article.about__information__item.awards
+          h6.about__information__item__title(data-animation="title" data-delay=`${0.4}`) /Awards
+          ul.about__information__item__awards
+            each item, index in prismic.about.data.awards
+              li.about__information__item__award
+                a.about__information__item__award__link(href=item.link1.url  target='_blank') 
+                  span.about__information__item__award__line(data-animation="line") 
+                  .about__information__item__award__container(data-animation="y")
+                    p.about__information__item__award__text=item.project
+                    p.about__information__item__award__text=item.award
+                    p.about__information__item__award__text=item.jury
+                    p.about__information__item__award__text=item.date
+      a.about__information__item__link(href=prismic.about.data.link.url target='_blank' data-animation="link" data-delay=0.6) Learn more about me
     h1.about__title!=prismic.asHTML(prismic.about.data.title).replace(/<p>/g, `<p data-animation="highlight">`)
