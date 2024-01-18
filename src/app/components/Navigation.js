@@ -5,6 +5,7 @@ import Link from '../animations/Link';
 import Title from '../animations/Title';
 import Component from '../classes/Component';
 import { mapEach } from '../utils/dom';
+import { smooth } from '../utils/easing';
 
 export default class Navigation extends Component {
   constructor({ template }) {
@@ -15,6 +16,7 @@ export default class Navigation extends Component {
         footer: '.footer',
         links: '[data-animation="navigation-link"]',
         titles: '[data-animation="navigation-title"]',
+        dot: '.footer__left__dot',
       },
     });
 
@@ -51,6 +53,13 @@ export default class Navigation extends Component {
 
   show() {
     gsap.set([this.elements.nav, this.elements.footer], { autoAlpha: 1 });
+
+    gsap.to(this.elements.dot, {
+      autoAlpha: 1,
+      duration: 0.7,
+      delay: 1,
+      ease: smooth,
+    });
 
     each(this.elements.animationsLink, (link) => {
       if (link.href === '/' || link.href === '/about') {

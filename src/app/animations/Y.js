@@ -11,8 +11,6 @@ export default class Y extends Animation {
     this.delay = delay;
     this.index = index;
 
-    console.log(this.index);
-
     gsap.set(this.element, { yPercent: 175 });
   }
 

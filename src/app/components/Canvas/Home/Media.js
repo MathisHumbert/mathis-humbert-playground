@@ -5,7 +5,6 @@ import EventEmitter from 'events';
 
 import fragment from '../../../shaders/media-fragment.glsl';
 import vertex from '../../../shaders/media-vertex.glsl';
-import { smooth, translate } from '../../../utils/easing';
 
 export default class Media extends EventEmitter {
   constructor({ element, index, scene, geometry, screen, viewport }) {

@@ -67,7 +67,7 @@ export default class Line {
     this.line.position.x = this.posX;
     this.line.position.y = this.index * -0.04 + this.total * 0.02;
 
-    this.points[0].set(-this.scaleX, 0, 0);
+    this.points[0].set(-this.scaleX / 2, 0, 0);
     this.points[1].set(this.scaleX, 0, 0);
 
     this.geometry.setFromPoints(this.points);

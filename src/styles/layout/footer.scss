@@ -15,9 +15,16 @@
     padding: 24px;
   }
 }
+
 .footer__left {
   display: flex;
   flex-direction: column;
+}
+
+.footer__left__container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .footer__left__title {
@@ -26,6 +33,17 @@
 
 .footer__left__text {
   @extend %title-24;
+}
+
+.footer__left__dot {
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  animation: blinking 1s;
+  animation-iteration-count: infinite;
+  background: currentColor;
+  opacity: 0;
+  visibility: hidden;
 }
 
 .footer__right {
@@ -40,4 +58,19 @@
 .footer__right__link {
   @extend %title-24;
   @extend %link;
+}
+
+@keyframes blinking {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  51% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
 }
