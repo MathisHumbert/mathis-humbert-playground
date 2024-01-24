@@ -117,8 +117,16 @@
 .about__information__item__award__text {
   @extend %description-14;
 
+  &:nth-child(2) {
+    width: 11rem;
+  }
+
   @include media('<phone') {
     font-size: 2rem;
+
+    &:nth-child(2) {
+      width: 16rem;
+    }
   }
 }
 
