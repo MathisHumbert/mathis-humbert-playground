@@ -118,13 +118,21 @@
   @extend %description-14;
 
   &:nth-child(2) {
-    width: 11rem;
+    width: 13rem;
+  }
+
+  &:nth-child(3) {
+    width: 13rem;
   }
 
   @include media('<phone') {
-    font-size: 2rem;
+    font-size: 1.8rem;
 
     &:nth-child(2) {
+      width: 16rem;
+    }
+
+    &:nth-child(3) {
       width: 16rem;
     }
   }
