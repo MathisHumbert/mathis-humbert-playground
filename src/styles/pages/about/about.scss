@@ -110,31 +110,16 @@
 }
 
 .about__information__item__award__container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1.25fr 1fr;
   gap: 2rem;
 }
 
 .about__information__item__award__text {
   @extend %description-14;
 
-  &:nth-child(2) {
-    width: 13rem;
-  }
-
-  &:nth-child(3) {
-    width: 13rem;
-  }
-
   @include media('<phone') {
     font-size: 1.8rem;
-
-    &:nth-child(2) {
-      width: 16rem;
-    }
-
-    &:nth-child(3) {
-      width: 16rem;
-    }
   }
 }
 
